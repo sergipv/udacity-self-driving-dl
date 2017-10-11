@@ -1,25 +1,15 @@
-# **Finding Lane Lines on the Road** 
-
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file. But feel free to use some other method and submit a pdf if you prefer.
-
----
-
-**Finding Lane Lines on the Road**
+# Finding Lane Lines on the Road
 
 The goals / steps of this project are the following:
 * Make a pipeline that finds lane lines on the road
 * Reflect on your work in a written report
 
+![Solid White Line](/test_images_output/solidWhiteRight.jpg)
 
-[image1]: ./test_images_output/solidWhiteRight.jpg
-
----
 
 ### Reflection
 
-### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
+### 1. Pipeline description
 
 I implemented the pipeline in overlap_lane. This function takes one parameter, an image, and returns this image with extrapolated line segments that represent divisory lines on a road.
 
@@ -40,11 +30,11 @@ This is a first step; a second step is, using the same dimensions than the ones 
 
 Some images from the final pipeline:
 
-![Solid Yellow Curve][./test_images_output/solidYellowCurve2.jpg]
-![Solid Yellow Left][./test_images_output/solidYellowLeft.jpg]
+![Solid Yellow Curve](/test_images_output/solidYellowCurve2.jpg)
+![Solid Yellow Left](./test_images_output/solidYellowLeft.jpg)
 
 
-### 2. Identify potential shortcomings with your current pipeline
+### 2. Shortcomings taken in this project
 
 - The main shortcoming is the assumption that the lines are always on the same location of the image. We can probably create a more robust approach by allowing the limits of the region of interest to be changed, depending on the lines found using HoughLines. But if the car tries to change lanes, for example, the pipeline might fail detecting the lines on the image (at some moment should be a transtion of left->right or right->left in one of the lines).
 
@@ -56,7 +46,8 @@ Some images from the final pipeline:
 
 - Other cars and some structures seem to confuse the line detector.
 
-### 3. Suggest possible improvements to your pipeline
+
+### 3. Future work
 
 - Removing outliers is one of the main issues for this pipelines. By using the information that we are looking for a line, we can create a stonger cost function (different than the minimization of the sum of distances) that would ignore these points that are not close enough to the line, while at the same time maximizing the number of points that end up being close enought to the line. This change would belong to the definition of the region of interest for the next iteration, and to do the estimation of the slope of the lines (currently in the function draw_lines().
 
