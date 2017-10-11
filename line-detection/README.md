@@ -4,7 +4,7 @@ The goals / steps of this project are the following:
 * Make a pipeline that finds lane lines on the road
 * Reflect on your work in a written report
 
-![Solid White Line](/test_images_output/solidWhiteRight.jpg)
+![Solid White Line](./test_images_output/solidWhiteRight.jpg)
 
 
 ### Reflection
@@ -30,7 +30,7 @@ This is a first step; a second step is, using the same dimensions than the ones 
 
 Some images from the final pipeline:
 
-![Solid Yellow Curve](/test_images_output/solidYellowCurve2.jpg)
+![Solid Yellow Curve](./test_images_output/solidYellowCurve2.jpg)
 ![Solid Yellow Left](./test_images_output/solidYellowLeft.jpg)
 
 
