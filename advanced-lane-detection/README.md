@@ -18,7 +18,7 @@ We can compute the distortion of the camera with OpenCV, essentially using the f
 
 An example from a distorted (top) and undistorted (bottom) image are displayed below:
 
-[image1]: /results/camera_distorted.png "Distorted image (left) and undistorted (right) "
+[image1]: ./results/camera_distorted.png "Distorted image (left) and undistorted (right) "
 ![alt text][image1] 
 
 This code is in the method plot_undistorted of the notebook.
@@ -27,10 +27,10 @@ This code is in the method plot_undistorted of the notebook.
 
 The perspective transform correspond to first identifying which area of the original image we want to warp, and the destination area. To implement this transformation first we need to know which area we want to "zoom in"; that area corresponds to the road ahead of us. In a real scenario we would probably have to do some type of variable detection (as we can see in the harder challenge, the are we *should* crop changes with time), but in this specific proble we are mapping from and to known coordinates. The original and warped images are shown below:
 
-[image2]: /results/frame63.png "Unwarped image"
+[image2]: ./results/frame63.png "Unwarped image"
 ![alt text][image2] 
 
-[image3]: /results/frame63_warped.png "Warped image"
+[image3]: ./results/frame63_warped.png "Warped image"
 ![alt text][image3] 
 
 This code is in the Perspective Transform section of the notebook (method unwarp).
@@ -42,7 +42,7 @@ For this project, I tested different options to create a binary image where we h
 The different binary-thresholded images from the channels, and the combination of all partial binary images, are shown below:
 
 
-[image4]: /results/binaries.png "Binary images"
+[image4]: ./results/binaries.png "Binary images"
 ![alt text][image4] 
 
 One post-processing step I realized after combining the multiple binary images was to apply a morphological close operation. This operation produces a dilation followed by an erosion. While this might strengthen noise on the binary images, it also strengthen the lines on images where they are not so easily detected. Initially I thought of performing an open operation, which would have removed most of the noise, but it ended up affecting the lines when the image was more difficult to process.
@@ -63,7 +63,7 @@ Another problem during the estimation was the case there was some noise and the 
 
 In the image below the line estimation is shown, with the different window position, and the strategy to keep the same increments for non-detected lines, as long as some line was detected before.
 
-[image5]: /results/poly_dots.png "Estimation of the lines"
+[image5]: ./results/poly_dots.png "Estimation of the lines"
 ![alt text][image5] 
 
 
@@ -87,7 +87,7 @@ I was able to have pretty good results for two of the three videos. The harder_c
 
 See a final frame from the challenge video where this information is displayed:
 
-[image6]: /results/pipeline.png "Estimation of the lines in the pipeline"
+[image6]: ./results/pipeline.png "Estimation of the lines in the pipeline"
 ![alt text][image6] 
 
 This code is in the pipeline method of the notebook.
