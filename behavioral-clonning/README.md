@@ -13,12 +13,12 @@ There were some issues when I downloaded an old version of the simulator, which 
 
 Histogram of angles using the old simulator:
 
-[image1]: /images/old_simulator.png "Old Simulator"
+[image1]: ./images/old_simulator.png "Old Simulator"
 ![alt text][image1]
 
 Histogram of angles using the new simulatori (before flipping images):
 
-[image2]: /images/collected_4.png "Old Simulator"
+[image2]: ./images/collected_4.png "Old Simulator"
 ![alt text][image2]
 
 After collecting this data, it became clear that there was some pre-processing needed: displaying a histogram of the steering angle data, showed that there most of the data was too close to 0.0 (which trains for no change in steering angle). Also, it became apparent that more data needed to be generated (augmented) to have more simmetry on the input data. After a few mostly-successful simulations, I also recorded more data in several areas where the autonomous mode was not doing great: the bridge, and the two areas where there is a separated road made of sand. The data I recorded was in both directions.
