@@ -1,8 +1,6 @@
-# **Traffic Sign Recognition** 
+# Traffic Sign Recognition
 
----
-
-**Build a Traffic Sign Recognition Project**
+## Build a Traffic Sign Recognition Project
 
 The goals / steps of this project are the following:
 * Load the data set (see below for links to the project data set)
@@ -10,8 +8,6 @@ The goals / steps of this project are the following:
 * Design, train and test a model architecture
 * Use the model to make predictions on new images
 * Analyze the softmax probabilities of the new images
-* Summarize the results with a written report
-
 
 [//]: # (Image References)
 
@@ -26,18 +22,16 @@ The goals / steps of this project are the following:
 [image9]: ./new_images/work.jpg "Work ahead"
 [image10]: ./new_images/speed_130.jpg "Max Speed 130km/h"
 
+### Loading datasets
 
-
-### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
-
-First step on the project was to create a summary of the dataset to be trained, and to explore/visualize what images were part of the dataset. There are 3 pickle files that contain features and labels for training, validation and test datasets. The initial features are the images (32x32x2 pixel images) from the traffic signs.
+Before starting to work on the classificaiton itself, it is good to explore and visualize what images are part of the dataset we are trying to classify and what is the distribution of the different classes. I was using 3 pickle files that contain features and labels for training, validation and test datasets. The initial features are the images (32x32x2 pixel images) from the traffic signs.
 
 The three datasets have sizes of 34799 (training), 4410 (validation) and 12630 (test).
 
-There are a total of 43 classes/labels that we want to classify to, corresponding a different types of traffic signs. The distribution of the classes is not uniform, which might make our models overfit for these classes for which we have more data (Speed limit of 20 and 50km/h are the top 2 classes). While the accuracy of a system might be higher for a specific model if there are more samples of these classes we have more training data, we probably want a system that is able to classify correctly independently of the class of the image. While I didn't do any specific work on that, I think that adding accuracy levels per class would be useful to determine if one (or more!) of our models is overfitting specific classes. This lack of a uniform distribution per class is not unique to the training data: test and validation data are also non-uniform.
+There are a total of 43 classes/labels that we want to classify to, corresponding a different types of traffic signs. The distribution of the classes is not uniform, which might make our models overfit for these classes for which we have more data (Speed limit of 20 and 50km/h are the top 2 classes). While the accuracy of a system might be higher for a specific model if there are more samples of these classes we have more training data, we probably want a system that is able to classify correctly independently of the class of the image. While I didn't do any specific work on that, I think that adding accuracy levels per class would be useful to determine if one (or more!) of our models is overfitting specific classes. This lack of a uniform distribution per class is not unique to the training data: test and validation data are also non-uniform. We can also augment the data for these classes that lack enough data to avoid unbalance classification.
 
 
-### 2. Include an exploratory visualization of the dataset.
+### Exploratory visualization of the dataset.
 
 It is usually a good idea to visualize some of the images from the dataset:
 
@@ -48,20 +42,20 @@ The images on the dataset have been taken with different illumination and angles
 
 ### Design and Test a Model Architecture
 
-#### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
+#### 1. Data pre-processing
 
 After visualizing some images, it was pretty clear that the features (images) were not normalized, so I proceeded to normalize the images. While I considered implementing some data augmentation for the training, after some tests generating images with random changes in brightness and contrast, they did not provide a sufficient improvmenent in final accuracy (even though I didn't do a extense work in that area). I did not consider flipping the images since the traffic signals would be different in some cases (right turn vs left turn for instance).
 
 As noted before, if I were to spend more time on data augmentation, I would focus on trying to generate more images for these classes that have lower number of training samples.
 
 
-#### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+#### 2. Model Architecture
 
-The final model I implemented is an ensemble of three diferent models: leNet, a leNet-based model with batch normalization and a model based on VGG. All models were trained separately, with the ensemble combining the results on evaluation time. In general, I didn not keep the model with highest validation during training, but the last model I got; ie: if I trained for 20 epochs and the model had higher validation accuracy at epoch 18 than at epoch 20, I would still take the model at epoch 20 (mostly for simplicity).
+The final model I implemented is an ensemble of three diferent models: leNet, a leNet-based model with batch normalization and a model based on VGG. All models were trained separately, with the ensemble combining the results on evaluation time. In general, I did not keep the model with highest validation during training, but the last model I got; ie: if I trained for 20 epochs and the model had higher validation accuracy at epoch 18 than at epoch 20, I would still take the model at epoch 20 (mostly for simplicity).
 
 The ensemble was implemented by evaluating the three models separately and adding the scores.
 
-- LeNet:
+- LeNet-based:
 
 This was the fastest model to train; it also got a pretty good validation (0.959) and test accuracy values (0.946). The main difference with LeNet was the usage of a dropout layer, where we drop weights on the network with a probability of 0.5. This model was also the faster to converge into a model with acceptable results.
 
@@ -145,15 +139,14 @@ This VGG-based model ended up having the higher accuracy level from the three in
 
 
 
-####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
+#### 3. Training the models.
 
 As I mentioned, I trained three different models and I combine them in an ensemble. The structure of training is similar for each model: all of them use Adam optimizer, with a learning rate of 0.001. The cost function to minimize was the mean of tf.nn.softmax_cross_entropy_with_logits for all models.
 
 I ended up erring a little bit on the longer side of number of epochs (since that gave the final ensemble a bit boost of 0.1-0.2 boost). The number of epochs I used was 25, 50 and 30 forLeNet, Batch Normalization and VGG. The main reason why I added way more epochs to the Batch Normalization model was the random pre-processing of the images before the training.
 
 
-#### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
-
+#### 4. Results
 
 Each of the models have a validation and test accuracy > 0.93. For each individual model:
 
@@ -189,9 +182,9 @@ In general, the use of dropout was needed to avoid overfitting. Clearly the netw
 The ensemble of all three models ended up boosting the final test accuracy quite a bit (0.96 to 0.975 in the last training I did, even though in some cases it reached 0.988 test accuracy). As I mention before I wanted to try ensemble with different architectures to see if they could provide higher accuracy when combining their learnings, which ended up being the case. The main challenge was mostly technical, since I wasn't aware of the tf.variable_scope and it took a bit until I got this piece working.
 
 
-###Test a Model on New Images
+### Test a Model on New Images
 
-####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
+#### 1. Select some new images
 
 Here are five German traffic signs that I found on the web:
 
@@ -205,7 +198,7 @@ While I would have loved to test more, one of the problems I had was to find ima
 
 One thing that I was interested on was what was the model going to predict with signs that the model wasn't trained on. For this specific case I added a sign with no training data, and I hoped the ensemble would have classified the sign as the closest from the training labels. In this case, the image was a top speed at 130km/h, so I hoped the top score was 120km/h, but strangely, 120km/h was not even in the top 5, and the ensemble was quite sure the image was a "End of no passing". The only explanation I could find was that one of the sides of the road seems the 45 degree gray line from a "End of no passing" traffic sign. In any case, it made me wonder how to get more generalizable results for non-seen images.
 
-####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
+#### 2. Results
 
 Here are the results of the prediction:
 
@@ -222,12 +215,8 @@ Here are the results of the prediction:
 
 The model was able to correctly guess 6 of the 6 traffic signs for which we had labels, which gives an accuracy of 100%. This compares favorably to the accuracy on the test set, but this can be given by the limited amount of data I used compared to the test set.
 
-
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+#### 3. Comparing top-5 results for the test images
 
 The usage of the ensemble makes it pretty clear for all images which is the correct image. In no case there was much confusion and all the images were classified with a 1.0 score (the score is not really 1.0, but in the 3rd order of magniture closer to 1 (>0.999). Same thing for the other 4 top results.
-
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
 
