@@ -1,3 +1,0 @@
-/home/sergi/Documents/Udacity - SelfDriving/extended-kalman-filter/build/CMakeFiles/edit_cache.dir
-/home/sergi/Documents/Udacity - SelfDriving/extended-kalman-filter/build/CMakeFiles/rebuild_cache.dir
-/home/sergi/Documents/Udacity - SelfDriving/extended-kalman-filter/build/CMakeFiles/ExtendedKF.dir
