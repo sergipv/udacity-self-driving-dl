@@ -22,25 +22,8 @@ void KalmanFilter::Predict() {
   P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
-
 void KalmanFilter::Update(const VectorXd &z) {
-  MatrixXd Ht = H_.transpose();
-
   VectorXd y = z - H_ * x_; // H_ * x_ = z_pred
-  UpdateWithStateDiff(y);
-}
-
-void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  // x_ is in cartesian coordinates, and we need polar coordinates to compare
-  // with z, which is encoded in polar coordinates.
-  float range = sqrt(x_(0) * x_(0) + x_(1) *x_(1));
-  float angle = atan(x_(1) / x_(0));
-  float range_rate = (x_(0) * x_(2) + x_(1) * x_(3)) / range;
-
-  VectorXd z_pred(3);
-  z_pred << range, angle, range_rate;
-
-  VectorXd y = z - z_pred;
   UpdateWithStateDiff(y);
 }
 
@@ -53,5 +36,31 @@ void KalmanFilter::UpdateWithStateDiff(const VectorXd &y) {
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
-
 }
+
+void KalmanFilter::UpdateEKF(const VectorXd &z) {
+  // x_ is in cartesian coordinates, and we need polar coordinates to compare
+  // with z, which is encoded in polar coordinates.
+  float range = sqrt(x_(0) * x_(0) + x_(1) *x_(1));
+  float angle = atan2(x_(1), x_(0));
+  float range_rate = (x_(0) * x_(2) + x_(1) * x_(3)) / range;
+
+  VectorXd z_pred(3);
+  z_pred << range, angle, range_rate;
+
+  VectorXd y = z - z_pred;
+  MaybeCorrectAngle(&y);
+  
+  UpdateWithStateDiff(y);
+}
+
+void KalmanFilter::MaybeCorrectAngle(VectorXd *y) {
+  while ((*y)[1] > M_PI || (*y)[1] < -M_PI) {
+    if ((*y)[1] > M_PI) {
+      (*y)[1] -= M_PI;
+    } else {
+      (*y)[1] += M_PI;
+    }
+  }
+}
+

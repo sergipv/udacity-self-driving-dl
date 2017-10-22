@@ -64,6 +64,11 @@ public:
    */
   void UpdateEKF(const Eigen::VectorXd &z);
 
+private:
+  // Radar angle has to be [-PI, PI].
+  void MaybeCorrectAngle(Eigen::VectorXd *y);
+
+  // Common operations for Update and UpdateEKF.
   void UpdateWithStateDiff(const Eigen::VectorXd &y);
 
 };
